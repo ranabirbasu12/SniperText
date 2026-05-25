@@ -96,6 +96,8 @@ class SettingsDialog(QDialog):
         general_layout = QVBoxLayout()
         self._notifications_cb = QCheckBox("Show notification after capture")
         general_layout.addWidget(self._notifications_cb)
+        self._newlines_cb = QCheckBox("Preserve newlines in captured text")
+        general_layout.addWidget(self._newlines_cb)
         self._startup_cb = QCheckBox("Start on login")
         general_layout.addWidget(self._startup_cb)
         if sys.platform != "win32":
@@ -118,6 +120,7 @@ class SettingsDialog(QDialog):
         if idx >= 0:
             self._engine_combo.setCurrentIndex(idx)
         self._notifications_cb.setChecked(self._config.notifications)
+        self._newlines_cb.setChecked(self._config.preserve_newlines)
         self._startup_cb.setChecked(self._config.start_on_login)
 
     def _apply_and_accept(self):
@@ -126,6 +129,7 @@ class SettingsDialog(QDialog):
             self._config.hotkey = hotkey_text
         self._config.ocr_engine = self._engine_combo.currentData()
         self._config.notifications = self._notifications_cb.isChecked()
+        self._config.preserve_newlines = self._newlines_cb.isChecked()
         self._config.start_on_login = self._startup_cb.isChecked()
         self._config.save()
         self.settings_changed.emit()

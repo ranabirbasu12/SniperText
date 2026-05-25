@@ -11,6 +11,7 @@ from src.overlay import CaptureOverlay
 from src.hotkey import HotkeyListener
 from src.tray import SystemTray
 from src.settings import SettingsDialog
+from src.startup import sync_startup
 
 
 def get_asset_path(filename: str) -> str:
@@ -57,6 +58,8 @@ class SniperTextApp:
         try:
             image = capture_region(x1, y1, x2, y2)
             text = self.ocr_engine.extract_text(image)
+            if text and not self.config.preserve_newlines:
+                text = " ".join(text.splitlines())
 
             if text:
                 clipboard = self.app.clipboard()
@@ -80,6 +83,7 @@ class SniperTextApp:
         """Re-apply settings after they change."""
         self.ocr_engine = get_engine(self.config.ocr_engine)
         self.hotkey_listener.update_hotkey(self.config.hotkey)
+        sync_startup(self.config.start_on_login)
 
     def _show_about(self):
         """Show the about dialog."""

@@ -44,8 +44,11 @@ class CaptureOverlay(QWidget):
         return dx >= 5 and dy >= 5
 
     def activate(self):
-        """Show the overlay fullscreen on the primary monitor."""
-        screen = QApplication.primaryScreen()
+        """Show the overlay on the screen where the cursor currently is."""
+        cursor_pos = QCursor.pos()
+        screen = QApplication.screenAt(cursor_pos)
+        if screen is None:
+            screen = QApplication.primaryScreen()
         geometry = screen.geometry()
         self.setGeometry(geometry)
         self._start_pos = None
@@ -99,12 +102,19 @@ class CaptureOverlay(QWidget):
             if self._is_valid_selection():
                 x1, y1 = self._start_pos
                 x2, y2 = self._end_pos
-                # Map to global screen coordinates
+                # Map widget-local coords to physical pixel coords for mss.
+                # Qt gives logical coords; mss needs physical pixels.
+                # Scale local offsets by the screen's DPR, then add
+                # the physical origin of the screen (logical origin * DPR).
+                screen = self.screen()
+                dpr = screen.devicePixelRatio() if screen else 1.0
                 geo = self.geometry()
-                gx1 = geo.x() + min(x1, x2)
-                gy1 = geo.y() + min(y1, y2)
-                gx2 = geo.x() + max(x1, x2)
-                gy2 = geo.y() + max(y1, y2)
+                ox = int(geo.x() * dpr)
+                oy = int(geo.y() * dpr)
+                gx1 = ox + int(min(x1, x2) * dpr)
+                gy1 = oy + int(min(y1, y2) * dpr)
+                gx2 = ox + int(max(x1, x2) * dpr)
+                gy2 = oy + int(max(y1, y2) * dpr)
                 self.hide()
                 self.region_selected.emit(gx1, gy1, gx2, gy2)
             # else: stay open, let user try again

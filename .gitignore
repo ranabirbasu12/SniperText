@@ -1,0 +1,39 @@
+# --- Python ---
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.coverage
+htmlcov/
+*.egg-info/
+.venv/
+venv/
+env/
+
+# --- PyInstaller build outputs (regenerable from .spec) ---
+build/
+dist/
+*.exe
+*.pkg
+# NOTE: SniperText.spec is hand-edited, keep it tracked
+
+# --- IDE / editor ---
+.vscode/
+.idea/
+*.swp
+*~
+.DS_Store
+Thumbs.db
+
+# --- Secrets / local config ---
+.env
+.env.*.local
+*.key
+
+# --- Claude Code project-local settings ---
+.claude/settings.local.json
+
+# --- Logs / caches ---
+*.log
+.cache/

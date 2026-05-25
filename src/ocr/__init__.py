@@ -1,9 +1,18 @@
+import sys
+
 from src.ocr.base import OCREngine
 from src.ocr.tesseract import TesseractEngine
 
 ENGINE_REGISTRY: dict[str, type[OCREngine]] = {
     "tesseract": TesseractEngine,
 }
+
+if sys.platform == "win32":
+    try:
+        from src.ocr.winocr_engine import WindowsOCREngine
+        ENGINE_REGISTRY["winocr"] = WindowsOCREngine
+    except ImportError:
+        pass
 
 
 def get_engine(name: str) -> OCREngine:

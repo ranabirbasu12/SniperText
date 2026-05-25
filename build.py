@@ -36,14 +36,27 @@ def build():
         f"--add-data={icon_path}{os.pathsep}assets",
     ]
 
+    # Hidden imports for winocr / WinRT on Windows
+    winrt_hidden = [
+        "winocr",
+        "winrt.runtime",
+        "winrt.windows.media.ocr",
+        "winrt.windows.graphics.imaging",
+        "winrt.windows.storage.streams",
+        "winrt.windows.globalization",
+        "winrt.windows.foundation",
+        "winrt.windows.foundation.collections",
+    ]
+    for mod in winrt_hidden:
+        cmd.extend(["--hidden-import", mod])
+
     tesseract_path = find_tesseract()
     if tesseract_path:
         tesseract_dir = str(Path(tesseract_path).parent)
         cmd.append(f"--add-binary={tesseract_dir}{os.pathsep}tesseract")
         print(f"Bundling Tesseract from: {tesseract_dir}")
     else:
-        print("WARNING: Tesseract not found on this system.")
-        print("The .exe will require Tesseract installed separately.")
+        print("Tesseract not found — .exe will use Windows OCR (winocr) by default.")
 
     cmd.append(str(main_script))
 

@@ -10,7 +10,7 @@ def test_default_values():
     config._data = {}
     config._path = Path("/nonexistent/config.json")
     assert config.hotkey == "ctrl+shift+t"
-    assert config.ocr_engine == "tesseract"
+    assert config.ocr_engine == "winocr"
     assert config.notifications is True
     assert config.start_on_login is False
 

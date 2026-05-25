@@ -25,8 +25,8 @@ def test_capture_region_returns_pil_image(mock_mss_module):
 
 
 @patch("src.capture.mss")
-def test_capture_region_clamps_negative_coords(mock_mss_module):
-    """Negative coordinates should be clamped to 0."""
+def test_capture_region_allows_negative_coords(mock_mss_module):
+    """Negative coordinates are valid for multi-monitor setups."""
     mock_sct = MagicMock()
     mock_mss_module.mss.return_value.__enter__ = MagicMock(return_value=mock_sct)
     mock_mss_module.mss.return_value.__exit__ = MagicMock(return_value=False)
@@ -40,8 +40,8 @@ def test_capture_region_clamps_negative_coords(mock_mss_module):
     capture_region(-10, -20, 40, 30)
 
     call_args = mock_sct.grab.call_args[0][0]
-    assert call_args["left"] == 0
-    assert call_args["top"] == 0
+    assert call_args["left"] == -10
+    assert call_args["top"] == -20
 
 
 def test_capture_region_swaps_inverted_coords():

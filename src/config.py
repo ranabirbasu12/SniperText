@@ -3,9 +3,10 @@ from pathlib import Path
 
 DEFAULTS = {
     "hotkey": "ctrl+shift+t",
-    "ocr_engine": "tesseract",
+    "ocr_engine": "winocr",
     "notifications": True,
     "start_on_login": False,
+    "preserve_newlines": True,
 }
 
 
@@ -33,6 +34,7 @@ class Config:
             "ocr_engine": self.ocr_engine,
             "notifications": self.notifications,
             "start_on_login": self.start_on_login,
+            "preserve_newlines": self.preserve_newlines,
         }
         self._path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
 
@@ -67,3 +69,11 @@ class Config:
     @start_on_login.setter
     def start_on_login(self, value: bool):
         self._data["start_on_login"] = value
+
+    @property
+    def preserve_newlines(self) -> bool:
+        return self._data.get("preserve_newlines", DEFAULTS["preserve_newlines"])
+
+    @preserve_newlines.setter
+    def preserve_newlines(self, value: bool):
+        self._data["preserve_newlines"] = value

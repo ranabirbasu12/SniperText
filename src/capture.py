@@ -3,9 +3,9 @@ from PIL import Image
 
 
 def _normalize_coords(x1: int, y1: int, x2: int, y2: int) -> tuple[int, int, int, int]:
-    """Ensure left < right and top < bottom, clamp negatives to 0."""
-    left = max(0, min(x1, x2))
-    top = max(0, min(y1, y2))
+    """Ensure left < right and top < bottom. Negative coords are valid (multi-monitor)."""
+    left = min(x1, x2)
+    top = min(y1, y2)
     right = max(x1, x2)
     bottom = max(y1, y2)
     return left, top, right, bottom
